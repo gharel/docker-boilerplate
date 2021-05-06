@@ -3,3 +3,4 @@ www/vendor/
 www/dist/
 
 .idea/
+logs/
