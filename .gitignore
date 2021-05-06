@@ -1,0 +1,5 @@
+www/node_modules/
+www/vendor/
+www/dist/
+
+.idea/
