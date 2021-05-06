@@ -2,10 +2,15 @@
   "name": "example",
   "version": "1.0.0",
   "main": "index.js",
-  "licence": "ISC",
+  "licences": [
+    {
+      "type": "MIT",
+      "url": "http://opensource.org/licences/MIT"
+    }
+  ],
   "scripts": {
-    "start": "exit 1",
-    "test": "exit 1"
+    "start": "echo \"start\" && exit 0",
+    "test": "echo \"test\" && exit 0"
   },
   "dependencies": {
   },
