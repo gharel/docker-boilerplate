@@ -1,0 +1,115 @@
+version: "3.9"
+
+services:
+  app:
+    image: php:${PHP_VERSION}-fpm-alpine${ALPINE_VERSION}
+    container_name: ${PROJECT_NAME}
+    restart: unless-stopped
+    environment:
+      XDEBUG_CONFIG: remote_host=host.docker.internal idekey=PHPSTORM remote_port=10000 remote_enable=1 remote_connect_back=1 remote_autostart=false
+      SITENAME: ${PROJECT_NAME}
+      DB_NAME: ${PROJECT_NAME}
+      CURRENT_UID: ${CURRENT_UID}
+      OS_NAME: ${OS_NAME}
+    depends_on:
+      - mysql
+    volumes:
+      - ./www:/var/www:z
+      - ./.docker/assets/php-conf/default.ini:/usr/local/etc/php/conf.d/default.ini
+      - ./.docker/assets/php-conf/php-smtp.ini:/usr/local/etc/php/conf.d/php-smtp.ini
+    ports:
+      - 9000:9000
+
+  nginx:
+    container_name: nginx
+    image: nginx:${NGINX_VERSION}-alpine
+    restart: unless-stopped
+    volumes:
+      - ./www:/var/www:delegated
+      - ./logs:/var/log/nginx
+      - ./.docker/assets/nginx-conf/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./.docker/assets/certs/ssl-cert-snakeoil.pem:/etc/ssl/certs/ssl-cert-snakeoil.pem
+      - ./.docker/assets/certs/ssl-cert-snakeoil.key:/etc/ssl/private/ssl-cert-snakeoil.key
+    depends_on:
+      - app
+    ports:
+      - 80:80
+      - 443:443 # 3000:443 to fix URL without port when using BrowserSync
+
+  mysql:
+    container_name: mysql
+    image: mysql:${MYSQL_VERSION}
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: webdev
+      MYSQL_PASSWORD: root
+      MYSQL_DATABASE: ${PROJECT_NAME}
+    volumes:
+      - mysqldata:/var/lib/mysql
+      - ./database:/database
+
+  webpack:
+    container_name: webpack
+    image: node:${NODE_VERSION}-slim
+    restart: unless-stopped
+    depends_on:
+      - yarn
+      - app
+    command: bash -c "chmod u+x /usr/local/bin/wait-node-install.sh && wait-node-install.sh && yarn start"
+    links:
+      - nginx
+    environment:
+      DEVURL: https://nginx
+    volumes:
+      - ./www:/home/node:rw
+      - ./.docker/bin/wait-node-install.sh:/usr/local/bin/wait-node-install.sh
+    working_dir: /home/node
+    ports:
+      - 3000:3000 # Port pour BrowserSync # remove this line to fix URL without port when using BrowserSync
+      - 3001:3001 # Port pour BrowserSync
+      - 8089:8089 # Port pour webpack
+
+  yarn:
+    container_name: yarn
+    image: node:${NODE_VERSION}-slim
+    restart: 'no'
+    command: bash -c "yarn install --verbose --pure-lockfile && touch ./node_modules/.install-done"
+    entrypoint: ""
+    volumes:
+      - ./www:/home/node:delegated
+    working_dir: /home/node
+
+  composer:
+    container_name: composer
+    image: composer:${COMPOSER_VERSION}
+    restart: 'no'
+    command: bash -c "composer install && echo 'Project ready on https://localhost'"
+    depends_on:
+      - app
+    entrypoint: ""
+    volumes:
+      - ./www:/app:cached
+
+  mailhog:
+    container_name: mailhog
+    image: mailhog/mailhog
+    restart: unless-stopped
+    ports:
+      - 8025:8025 # Web UI
+      - 1025:1025 # SMTP server
+
+  pma:
+    container_name: phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    restart: unless-stopped
+    depends_on:
+      - mysql
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: webdev
+      PMA_PASSWORD: root
+    ports:
+      - 8080:80
+
+volumes:
+  mysqldata:
