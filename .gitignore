@@ -1,6 +1,10 @@
 www/node_modules/
 www/vendor/
 www/dist/
+www/yarn-error.log
+www/composer.lock
+www/yarn.lock
+www/package-lock.json
 
 .idea/
 logs/

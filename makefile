@@ -47,6 +47,14 @@ yarn-build:
 yarn:
 	docker-compose run --rm yarn yarn $(COMMAND_ARGS)
 
+# NPM generic command
+npm:
+	docker-compose run --rm yarn npm $(COMMAND_ARGS)
+	
+# Node generic command
+node:
+	docker-compose run --rm yarn node $(COMMAND_ARGS)
+
 ## SQL commands
 sql-dump:
 	docker-exec -i mysql sh -c "apt-get update -qqy -o Acquire::CompressionTypes::Order::=gz && apt-get install zip && mysqldump -uwebdev -proot $(PROJECT_NAME) | zip database/$(PROJECT_NAME)-$(shell date +%F).sql.zip -"
