@@ -5,6 +5,7 @@
         <meta charset="UTF-8" />
     </head>
     <body>
-        <?php echo date('d/m/Y'); ?>
+        <h1>Current date</h1>
+        <p><?php echo date('d/m/Y H:m:i:s'); ?></p>
     </body>
 </html>
