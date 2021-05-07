@@ -75,6 +75,8 @@ services:
     restart: 'no'
     command: bash -c "yarn install --verbose --pure-lockfile && touch ./node_modules/.install-done"
     entrypoint: ""
+    environment:
+      CURRENT_UID: ${CURRENT_UID}
     volumes:
       - ./www:/home/node:delegated
     working_dir: /home/node
@@ -84,6 +86,8 @@ services:
     image: composer:${COMPOSER_VERSION}
     restart: 'no'
     command: bash -c "composer install && echo 'Project ready on https://localhost'"
+    environment:
+      CURRENT_UID: ${CURRENT_UID}
     depends_on:
       - app
     entrypoint: ""

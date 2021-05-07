@@ -15,17 +15,17 @@ start:
 stop:
 	docker-compose down
 enter:
-	docker-exec -it $(COMMAND_ARGS) sh -l
+	CURRENT_UID=${CURRENT_UID} docker-exec -it $(COMMAND_ARGS) sh -l
 
 # Composer commands for plugins
 composer-install:
-	docker-compose run --rm composer bash -c "composer install"
+	CURRENT_UID=${CURRENT_UID} docker-compose run --rm composer bash -c "composer install"
 composer-update:
-	docker-compose run --rm composer bash -c "composer update"
+	CURRENT_UID=${CURRENT_UID} docker-compose run --rm composer bash -c "composer update"
 composer-require:
-	docker-compose run --rm composer bash -c "composer require $(COMMAND_ARGS)"
+	CURRENT_UID=${CURRENT_UID} docker-compose run --rm composer bash -c "composer require $(COMMAND_ARGS)"
 composer-remove:
-	docker-compose run --rm composer bash -c "composer remove $(COMMAND_ARGS)"
+	CURRENT_UID=${CURRENT_UID} docker-compose run --rm composer bash -c "composer remove $(COMMAND_ARGS)"
 
 # Composer generic command
 composer:
@@ -33,27 +33,27 @@ composer:
 
 # Yarn commands
 yarn-install:
-	docker-compose run --rm yarn yarn install
+	CURRENT_UID=${CURRENT_UID} docker-compose run --rm yarn yarn install
 yarn-upgrade:
-	docker-compose run --rm yarn yarn upgrade $(COMMAND_ARGS)
+	CURRENT_UID=${CURRENT_UID} docker-compose run --rm yarn yarn upgrade $(COMMAND_ARGS)
 yarn-add:
-	docker-compose run --rm yarn yarn add $(COMMAND_ARGS)
+	CURRENT_UID=${CURRENT_UID} docker-compose run --rm yarn yarn add $(COMMAND_ARGS)
 yarn-remove:
-	docker-compose run --rm yarn yarn remove $(COMMAND_ARGS)
+	CURRENT_UID=${CURRENT_UID} docker-compose run --rm yarn yarn remove $(COMMAND_ARGS)
 yarn-build:
-	docker-compose run --rm yarn yarn build:production
+	CURRENT_UID=${CURRENT_UID} docker-compose run --rm yarn yarn build:production
 
 # Yarn generic command
 yarn:
-	docker-compose run --rm yarn yarn $(COMMAND_ARGS)
+	CURRENT_UID=${CURRENT_UID} docker-compose run --rm yarn yarn $(COMMAND_ARGS)
 
 # NPM generic command
 npm:
-	docker-compose run --rm yarn npm $(COMMAND_ARGS)
+	CURRENT_UID=${CURRENT_UID} docker-compose run --rm yarn npm $(COMMAND_ARGS)
 	
 # Node generic command
 node:
-	docker-compose run --rm yarn node $(COMMAND_ARGS)
+	CURRENT_UID=${CURRENT_UID} docker-compose run --rm yarn node $(COMMAND_ARGS)
 
 ## SQL commands
 sql-dump:
