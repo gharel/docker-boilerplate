@@ -11,8 +11,6 @@ services:
       DB_NAME: ${PROJECT_NAME}
     user:
       ${UID}:${GID}
-    depends_on:
-      - mysql
     volumes:
       - ./www:/var/www/html:z
       - ./.docker/assets/php-conf/default.ini:/usr/local/etc/php/conf.d/default.ini
@@ -75,7 +73,7 @@ services:
     container_name: yarn
     image: node:${NODE_VERSION}-slim
     restart: 'no'
-    command: bash -c "yarn install --verbose --pure-lockfile && touch ./node_modules/.install-done"
+    command: bash -c "yarn install --verbose --pure-lock && touch ./node_modules/.install-done"
     entrypoint: ""
     user:
       ${UID}:${GID}
@@ -87,7 +85,7 @@ services:
     container_name: composer
     image: composer:${COMPOSER_VERSION}
     restart: 'no'
-    command: bash -c "composer install && echo 'Project ready on https://localhost'"
+    command: bash -c "composer install -vvv --ignore-platform-reqs --no-interaction --no-progress && echo 'Project ready on https://localhost'"
     user:
       ${UID}:${GID}
     depends_on:

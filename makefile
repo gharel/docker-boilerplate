@@ -11,7 +11,6 @@ export UID
 GID := $(shell id -g)
 export GID
 
-# Docker commands
 start:
 	UID=${UID} GID=$(GID) docker-compose up --build
 stop:
@@ -19,7 +18,6 @@ stop:
 enter:
 	UID=${UID} GID=$(GID) docker-exec -it $(COMMAND_ARGS) sh -l
 
-# Composer commands for plugins
 composer-install:
 	UID=${UID} GID=$(GID) docker-compose run --rm composer bash -c "composer install"
 composer-update:
@@ -29,11 +27,15 @@ composer-require:
 composer-remove:
 	UID=${UID} GID=$(GID) docker-compose run --rm composer bash -c "composer remove $(COMMAND_ARGS)"
 
-# Composer generic command
 composer:
 	UID=${UID} GID=$(GID) docker-compose run --rm composer bash -c "composer $(COMMAND_ARGS)"
 
-# Yarn commands
+vendor-phpstan:
+	UID=${UID} GID=$(GID) docker-compose run --rm composer bash -c "vendor/bin/phpstan analyse --level 6 src"
+
+vendor:
+	UID=${UID} GID=$(GID) docker-compose run --rm composer bash -c "$(COMMAND_ARGS)"
+
 yarn-install:
 	UID=${UID} GID=$(GID) docker-compose run --rm yarn yarn install
 yarn-upgrade:
@@ -45,19 +47,21 @@ yarn-remove:
 yarn-build:
 	UID=${UID} GID=$(GID) docker-compose run --rm yarn yarn build:production
 
-# Yarn generic command
 yarn:
 	UID=${UID} GID=$(GID) docker-compose run --rm yarn yarn $(COMMAND_ARGS)
 
-# NPM generic command
 npm:
 	UID=${UID} GID=$(GID) docker-compose run --rm yarn npm $(COMMAND_ARGS)
 	
-# Node generic command
 node:
 	UID=${UID} GID=$(GID) docker-compose run --rm yarn node $(COMMAND_ARGS)
+	
+package-eslint:
+	UID=${UID} GID=$(GID) docker-compose run --rm yarn yarn run eslint "src/js" --fix
+	
+package:
+	UID=${UID} GID=$(GID) docker-compose run --rm yarn $(COMMAND_ARGS)
 
-## SQL commands
 sql-dump:
 	UID=${UID} GID=$(GID) docker-exec -i mysql sh -c "apt-get update -qqy -o Acquire::CompressionTypes::Order::=gz && apt-get install zip && mysqldump -uwebdev -proot $(PROJECT_NAME) | zip database/$(PROJECT_NAME)-$(shell date +%F).sql.zip -"
 sql-import:

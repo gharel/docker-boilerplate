@@ -1,0 +1,22 @@
+{
+    "env": {
+        "browser": true,
+        "es2021": true
+    },
+    "parser": "babel-eslint",
+    "extends": "eslint:recommended",
+    "rules": {
+        "indent": [
+            "error",
+            "tab"
+        ],
+        "quotes": [
+            "error",
+            "double"
+        ],
+        "semi": [
+            "error",
+            "always"
+        ]
+    }
+}
