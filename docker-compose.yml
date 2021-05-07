@@ -63,7 +63,10 @@ services:
     environment:
       DEVURL: https://nginx
     volumes:
-      - ./www:/home/node:rw # @TODO share only package .lock, .json and node_modules
+      - ./www/package.json:/home/node/package.json:rw
+      - ./www/package-lock.json:/home/node/package-lock.json:ro
+      - ./www/yarn.lock:/home/node/yarn.lock:ro
+      - ./www/node_modules:/home/node/node_modules:delegated
       - ./.docker/bin/wait-node-install.sh:/usr/local/bin/wait-node-install.sh
     working_dir: /home/node
     ports:
@@ -80,7 +83,10 @@ services:
     user:
       ${UID}:${GID}
     volumes:
-      - ./www:/home/node:delegated # @TODO share only package .lock, .json and node_modules
+      - ./www/package.json:/home/node/package.json:rw
+      - ./www/package-lock.json:/home/node/package-lock.json:ro
+      - ./www/yarn.lock:/home/node/yarn.lock:ro
+      - ./www/node_modules:/home/node/node_modules:delegated
     working_dir: /home/node
 
   composer:
@@ -94,7 +100,9 @@ services:
       - app
     entrypoint: ""
     volumes:
-      - ./www:/app:cached # @TODO share only composer .lock, .json and vendor
+      - ./www/composer.json:/app/composer.json:rw
+      - ./www/composer.lock:/app/composer.lock:ro
+      - ./www/vendor:/app/vendor:cached
 
   mailhog:
     container_name: mailhog

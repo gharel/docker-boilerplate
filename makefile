@@ -15,7 +15,7 @@ export GID
 start:
 	UID=${UID} GID=$(GID) docker-compose up --build
 stop:
-	docker-compose down
+	UID=${UID} GID=$(GID) docker-compose down
 enter:
 	UID=${UID} GID=$(GID) docker-exec -it $(COMMAND_ARGS) sh -l
 
@@ -31,7 +31,7 @@ composer-remove:
 
 # Composer generic command
 composer:
-	docker-compose run --rm composer bash -c "composer $(COMMAND_ARGS)"
+	UID=${UID} GID=$(GID) docker-compose run --rm composer bash -c "composer $(COMMAND_ARGS)"
 
 # Yarn commands
 yarn-install:
@@ -59,6 +59,6 @@ node:
 
 ## SQL commands
 sql-dump:
-	docker-exec -i mysql sh -c "apt-get update -qqy -o Acquire::CompressionTypes::Order::=gz && apt-get install zip && mysqldump -uwebdev -proot $(PROJECT_NAME) | zip database/$(PROJECT_NAME)-$(shell date +%F).sql.zip -"
+	UID=${UID} GID=$(GID) docker-exec -i mysql sh -c "apt-get update -qqy -o Acquire::CompressionTypes::Order::=gz && apt-get install zip && mysqldump -uwebdev -proot $(PROJECT_NAME) | zip database/$(PROJECT_NAME)-$(shell date +%F).sql.zip -"
 sql-import:
-	docker-exec -i mysql sh -c "apt-get update -qqy -o Acquire::CompressionTypes::Order::=gz && apt-get install unzip && unzip -p database/$(COMMAND_ARGS) | mysql -uwebdev -proot $(PROJECT_NAME)"
+	UID=${UID} GID=$(GID) docker-exec -i mysql sh -c "apt-get update -qqy -o Acquire::CompressionTypes::Order::=gz && apt-get install unzip && unzip -p database/$(COMMAND_ARGS) | mysql -uwebdev -proot $(PROJECT_NAME)"
