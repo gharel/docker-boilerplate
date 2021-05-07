@@ -8,6 +8,8 @@ www/package-lock.json
 www/.npm
 www/.yarn
 www/.cache
+www/.yarnrc
+www/.config/rome/
 
 .idea/
 logs/

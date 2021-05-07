@@ -6,6 +6,6 @@
     </head>
     <body>
         <h1>Current date</h1>
-        <p><?php echo date('d/m/Y H:m:i:s'); ?></p>
+    	<p><?php echo date('d/m/Y H:m:i:s'); ?></p>
     </body>
 </html>

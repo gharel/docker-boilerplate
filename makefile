@@ -56,9 +56,6 @@ npm:
 node:
 	UID=${UID} GID=$(GID) docker-compose run --rm yarn node $(COMMAND_ARGS)
 	
-package-eslint:
-	UID=${UID} GID=$(GID) docker-compose run --rm yarn yarn run eslint "src/js" --fix
-	
 package:
 	UID=${UID} GID=$(GID) docker-compose run --rm yarn $(COMMAND_ARGS)
 

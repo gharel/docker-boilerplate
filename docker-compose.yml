@@ -61,9 +61,9 @@ services:
     environment:
       DEVURL: https://nginx
     volumes:
-      - ./www:/home/node:rw
+      - ./www:/home/node/${PROJECT_NAME}:rw
       - ./.docker/bin/wait-node-install.sh:/usr/local/bin/wait-node-install.sh
-    working_dir: /home/node
+    working_dir: /home/node/${PROJECT_NAME}
     ports:
       - 3000:3000 # Port pour BrowserSync # remove this line to fix URL without port when using BrowserSync
       - 3001:3001 # Port pour BrowserSync
@@ -78,8 +78,8 @@ services:
     user:
       ${UID}:${GID}
     volumes:
-      - ./www:/home/node:delegated
-    working_dir: /home/node
+      - ./www:/home/node/${PROJECT_NAME}:delegated
+    working_dir: /home/node/${PROJECT_NAME}
 
   composer:
     container_name: composer
