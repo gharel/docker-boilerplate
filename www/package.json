@@ -1,20 +1,4 @@
 {
-  "name": "example",
-  "version": "1.0.0",
-  "main": "index.js",
-  "private": true,
-  "licences": [
-    {
-      "type": "MIT",
-      "url": "http://opensource.org/licences/MIT"
-    }
-  ],
-  "scripts": {
-    "start": "echo \"start\" && exit 0",
-    "test": "echo \"test\" && exit 0"
-  },
-  "dependencies": {
-  },
   "devDependencies": {
     "eslint": "^7.25.0"
   }
