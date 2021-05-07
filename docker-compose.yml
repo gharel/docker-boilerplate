@@ -63,10 +63,7 @@ services:
     environment:
       DEVURL: https://nginx
     volumes:
-      - ./www/package.json:/home/node/package.json:rw
-      - ./www/package-lock.json:/home/node/package-lock.json:ro
-      - ./www/yarn.lock:/home/node/yarn.lock:ro
-      - ./www/node_modules:/home/node/node_modules:delegated
+      - ./www:/home/node:rw
       - ./.docker/bin/wait-node-install.sh:/usr/local/bin/wait-node-install.sh
     working_dir: /home/node
     ports:
@@ -83,10 +80,7 @@ services:
     user:
       ${UID}:${GID}
     volumes:
-      - ./www/package.json:/home/node/package.json:rw
-      - ./www/package-lock.json:/home/node/package-lock.json:ro
-      - ./www/yarn.lock:/home/node/yarn.lock:ro
-      - ./www/node_modules:/home/node/node_modules:delegated
+      - ./www:/home/node:delegated
     working_dir: /home/node
 
   composer:
@@ -100,9 +94,7 @@ services:
       - app
     entrypoint: ""
     volumes:
-      - ./www/composer.json:/app/composer.json:rw
-      - ./www/composer.lock:/app/composer.lock:ro
-      - ./www/vendor:/app/vendor:cached
+      - ./www:/app:cached
 
   mailhog:
     container_name: mailhog

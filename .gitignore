@@ -5,6 +5,9 @@ www/yarn-error.log
 www/composer.lock
 www/yarn.lock
 www/package-lock.json
+www/.npm
+www/.yarn
+www/.cache
 
 .idea/
 logs/
