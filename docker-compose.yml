@@ -6,7 +6,7 @@ services:
     container_name: ${PROJECT_NAME}
     restart: unless-stopped
     environment:
-      XDEBUG_CONFIG: remote_host=host.docker.internal idekey=PHPSTORM remote_port=10000 remote_enable=1 remote_connect_back=1 remote_autostart=false
+      PHP_IDE_CONFIG: 'serverName=localhost'
       SITENAME: ${PROJECT_NAME}
       DB_NAME: ${PROJECT_NAME}
     user:
@@ -14,6 +14,7 @@ services:
     volumes:
       - ./www:/var/www/html:z
       - ./.docker/assets/php-conf/default.ini:/usr/local/etc/php/conf.d/default.ini
+      - ./.docker/assets/php-conf/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
       - ./.docker/assets/php-conf/php-smtp.ini:/usr/local/etc/php/conf.d/php-smtp.ini
     ports:
       - 9000:9000
@@ -37,6 +38,10 @@ services:
   mysql:
     container_name: mysql
     image: mysql:${MYSQL_VERSION}
+    restart: unless-stopped
+    cap_add:
+      - SYS_NICE
+    command: --default-authentication-plugin=mysql_native_password
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_USER: webdev
@@ -47,6 +52,7 @@ services:
     volumes:
       - mysqldata:/var/lib/mysql
       - ./database:/database
+      - ./.docker/assets/mysql-conf/mysqld.cnf:/etc/mysql/conf.d/mysqld.cnf
 
   webpack:
     container_name: webpack
@@ -58,8 +64,6 @@ services:
     command: bash -c "chmod u+x /usr/local/bin/wait-node-install.sh && wait-node-install.sh && yarn start"
     links:
       - nginx
-    environment:
-      DEVURL: https://nginx
     volumes:
       - ./www:/home/node/${PROJECT_NAME}:rw
       - ./.docker/bin/wait-node-install.sh:/usr/local/bin/wait-node-install.sh
@@ -86,11 +90,11 @@ services:
     image: composer:${COMPOSER_VERSION}
     restart: 'no'
     command: bash -c "composer install -vvv --ignore-platform-reqs --no-interaction --no-progress && echo 'Project ready on https://localhost'"
-    user:
-      ${UID}:${GID}
     depends_on:
       - app
     entrypoint: ""
+    user:
+      ${UID}:${GID}
     volumes:
       - ./www:/app:cached
 
@@ -99,8 +103,8 @@ services:
     image: mailhog/mailhog
     restart: unless-stopped
     ports:
-      - 8025:8025 # Web UI
       - 1025:1025 # SMTP server
+      - 8025:8025 # Web UI
 
   pma:
     container_name: phpmyadmin
